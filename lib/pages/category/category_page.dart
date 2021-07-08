@@ -1,6 +1,7 @@
 import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:book_aviyan_final/pages/category/category_books.dart';
 import 'package:book_aviyan_final/provider/category_provider.dart';
+import 'package:book_aviyan_final/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,8 @@ class CategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _categoryProvider = Provider.of<CategoryProvider>(context);
     List _categoryList = _categoryProvider.categories;
+    final userProvider = Provider.of<UserProvider>(context);
+    userProvider.userData();
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -25,7 +28,9 @@ class CategoryPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                CircleAvatar(backgroundColor: AppColor.mainColor),
+                CircleAvatar(
+                    backgroundImage: NetworkImage(userProvider.imageUrl ?? ""),
+                    backgroundColor: AppColor.mainColor),
               ],
             ),
             SizedBox(

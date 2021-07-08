@@ -2,14 +2,18 @@ import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/home_book.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/home_category.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/promotion_carousel.dart';
+import 'package:book_aviyan_final/provider/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    userProvider.userData();
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -20,7 +24,10 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(Icons.dashboard),
-                  CircleAvatar(backgroundColor: AppColor.mainColor),
+                  CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(userProvider.imageUrl ?? ""),
+                      backgroundColor: AppColor.mainColor),
                 ],
               ),
               Text(
