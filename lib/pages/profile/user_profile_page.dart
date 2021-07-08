@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,10 @@ class UserProfile extends StatefulWidget {
 
 class _ProfileState extends State<UserProfile> {
   late ScrollController _scrollController;
+  String? _name;
+  String? _email;
+  String? _imageUrl;
+  String? _phoneNumber;
   var top = 0.0;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
@@ -16,6 +21,20 @@ class _ProfileState extends State<UserProfile> {
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       setState(() {});
+    });
+    userData();
+  }
+
+  void userData() async {
+    User _user = _auth.currentUser!;
+    var _uid = _user.uid;
+    final DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection("users").doc(_uid).get();
+    setState(() {
+      _name = userDoc.get("name");
+      _email = userDoc.get("email");
+      _phoneNumber = userDoc.get("phoneNumber");
+      _imageUrl = userDoc.get("imageUrl");
     });
   }
 
@@ -71,7 +90,7 @@ class _ProfileState extends State<UserProfile> {
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: NetworkImage(
+                                      image: NetworkImage(_imageUrl ??
                                           'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
                                     ),
                                   ),
@@ -88,7 +107,7 @@ class _ProfileState extends State<UserProfile> {
                         ],
                       ),
                       background: Image(
-                        image: NetworkImage(
+                        image: NetworkImage(_imageUrl ??
                             'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
                         fit: BoxFit.fill,
                       ),
@@ -108,8 +127,9 @@ class _ProfileState extends State<UserProfile> {
                       thickness: 1,
                       color: Colors.grey,
                     ),
-                    userListTile('Email', 'Email sub', 0, context),
-                    userListTile('Phone number', '4555', 0, context),
+                    userListTile('Email', _email ?? "", 0, context),
+                    userListTile(
+                        'Phone number', _phoneNumber ?? "", 0, context),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: userTitle('User settings'),
