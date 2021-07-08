@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'LoginPage',
+                                  'Login',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 17,

@@ -1,5 +1,6 @@
 import 'package:book_aviyan_final/common_widgets/error_alert_dialog.dart';
 import 'package:book_aviyan_final/pages/auth/login_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,9 +24,21 @@ class _LandingPageState extends State<LandingPage> {
         try {
           final authResult = await _auth.signInWithCredential(
             GoogleAuthProvider.credential(
-                idToken: googleAuth.idToken,
-                accessToken: googleAuth.accessToken),
+              idToken: googleAuth.idToken,
+              accessToken: googleAuth.accessToken,
+            ),
           );
+          final User _user = _auth.currentUser!;
+          final _uid = _user.uid;
+
+          FirebaseFirestore.instance.collection("users").doc(_uid).set({
+            "id": _uid,
+            "name": _user.displayName,
+            "email": _user.email,
+            "phoneNumber": "",
+            "joinedAt": Timestamp.now(),
+            "imageUrl": _user.photoURL,
+          });
         } on FirebaseAuthException catch (e) {
           print(e.message);
           ErrorDialog.authErrorHandle(e.message!, context);

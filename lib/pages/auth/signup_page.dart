@@ -53,7 +53,7 @@ class _SignUpState extends State<SignUp> {
           "email": _emailAddress,
           "phoneNumber": _phoneNumber,
           "joinedAt": Timestamp.now(),
-          "imageUrl": null
+          "imageUrl": ""
         });
         Navigator.canPop(context) ? Navigator.pop(context) : null;
       } on FirebaseAuthException catch (error) {
