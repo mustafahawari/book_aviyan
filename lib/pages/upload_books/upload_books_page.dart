@@ -1,3 +1,4 @@
+import 'package:book_aviyan_final/common_widgets/error_alert_dialog.dart';
 import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +24,7 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
   bool _isLoading = false;
   var uuid = Uuid();
   final TextEditingController _categoryController = TextEditingController();
-  //
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String? _categoryValue;
 
@@ -59,47 +60,48 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
       print(_bookCategory);
       print(_bookDescription);
       print(_phoneNumber);
-      // Use those values to send our auth request ..
-      // try {
-      //   if (_pickedImage == null) {
-      //     ErrorDialog.authErrorHandle("Please pick an image", context);
-      //   } else {
-      //     setState(() {
-      //       _isLoading = true;
-      //     });
-      //   }
-      //   final ref = FirebaseStorage.instance
-      //       .ref()
-      //       .child('bookImages')
-      //       .child(_bookName + ".jpg");
-      //   await ref.putFile(_pickedImage!);
-      //   var url = await ref.getDownloadURL();
 
-      //   final User _user = _auth.currentUser!;
-      //   final _uid = _user.uid;
+      try {
+        if (_pickedImage == null) {
+          ErrorDialog.authErrorHandle("Please pick an image", context);
+        } else {
+          setState(() {
+            _isLoading = true;
+          });
+        }
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('bookImages')
+            .child(_bookName + ".jpg");
+        await ref.putFile(_pickedImage!);
+        var url = await ref.getDownloadURL();
 
-      //   final bookId = uuid.v4();
+        final User _user = _auth.currentUser!;
+        final _uid = _user.uid;
 
-      //   FirebaseFirestore.instance.collection("books").doc(bookId).set({
-      //     "bookName": _bookName,
-      //     "bookImage": url,
-      //     "category": _bookCategory,
-      //     "description": _bookDescription,
-      //     "phoneNumber": _phoneNumber,
-      //     "location": _location,
-      //     "userId": _uid,
-      //     "bookId": bookId,
-      //     "joinedAt": Timestamp.now(),
-      //   });
-      //   Navigator.canPop(context) ? Navigator.pop(context) : null;
-      // } on FirebaseAuthException catch (error) {
-      //   ErrorDialog.authErrorHandle(error.message!, context);
-      // } finally {
-      //   setState(() {
-      //     _isLoading = false;
-      //     _formKey.currentState!.reset();
-      //   });
-      // }
+        final bookId = uuid.v4();
+
+        FirebaseFirestore.instance.collection("books").doc(bookId).set({
+          "bookName": _bookName,
+          "bookImage": url,
+          "category": _bookCategory,
+          "description": _bookDescription,
+          "phoneNumber": _phoneNumber,
+          "location": _location,
+          "userId": _uid,
+          "bookId": bookId,
+          "joinedAt": Timestamp.now(),
+        });
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      } on FirebaseAuthException catch (error) {
+        ErrorDialog.authErrorHandle(error.message!, context);
+      } finally {
+        setState(() {
+          _isLoading = false;
+          _formKey.currentState!.reset();
+          _pickedImage = null;
+        });
+      }
     }
   }
 
@@ -113,7 +115,6 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
     setState(() {
       _pickedImage = pickedImageFile;
     });
-    // widget.imagePickFn(pickedImageFile);
   }
 
   void _pickImageGallery() async {
