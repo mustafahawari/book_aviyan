@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class BookModel {
   String? id;
   String? title;

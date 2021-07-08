@@ -1,8 +1,43 @@
+import 'package:book_aviyan_final/consts/colors.dart';
+import 'package:book_aviyan_final/models/book_model.dart';
 import 'package:flutter/material.dart';
 
 class GridBooks extends StatelessWidget {
   final int itemCount;
-  const GridBooks({Key? key, required this.itemCount}) : super(key: key);
+  GridBooks({Key? key, required this.itemCount}) : super(key: key);
+
+  final List books = [
+    BookModel(
+      title: "Book Title 1",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+    BookModel(
+      title: "Book Title 2",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+    BookModel(
+      title: "Book Title 3",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+    BookModel(
+      title: "Book Title 4",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+    BookModel(
+      title: "Book Title 5",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+    BookModel(
+      title: "Book Title 6",
+      coverImage:
+          "https://assets.teenvogue.com/photos/5cd4384fac4d9e712fe2ebb0/2:3/w_1852,h_2778,c_limit/The%20Gravity%20of%20Us_.jpg",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +71,7 @@ class GridBooks extends StatelessWidget {
                     width: 80,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(_bookList[index].coverImage!),
+                        image: NetworkImage(books[index].coverImage),
                         fit: BoxFit.fill,
                       ),
                       borderRadius: BorderRadius.circular(10),
@@ -46,7 +81,7 @@ class GridBooks extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  _bookList[index].title!,
+                  books[index].title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
