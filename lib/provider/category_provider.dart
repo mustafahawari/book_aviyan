@@ -7,12 +7,9 @@ class CategoryProvider with ChangeNotifier {
   List _categories = [
     CategoryModel(name: "Primary level"),
     CategoryModel(name: "Secondary level"),
+    CategoryModel(name: "Master"),
     CategoryModel(name: "Bachelor"),
-    CategoryModel(name: "Science"),
-    CategoryModel(name: "SlC"),
-    CategoryModel(name: "Class 9"),
-    CategoryModel(name: "Mathematics"),
-    CategoryModel(name: "business"),
+    CategoryModel(name: "Others"),
   ];
 
   List<CategoryModel> get categories => [..._categories];

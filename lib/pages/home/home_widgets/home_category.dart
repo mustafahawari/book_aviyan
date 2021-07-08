@@ -28,7 +28,7 @@ class HomeCategory extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, index) => SizedBox(width: 10),
-            itemCount: 6,
+            itemCount: _booksByCategory.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {

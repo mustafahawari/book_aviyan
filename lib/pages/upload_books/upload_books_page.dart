@@ -346,6 +346,10 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
                                   child: Text('Secondary Level'),
                                   value: 'Secondary Level',
                                 ),
+                                DropdownMenuItem<String>(
+                                  child: Text('Others'),
+                                  value: 'Others',
+                                ),
                               ],
                               onChanged: (value) {
                                 setState(() {
