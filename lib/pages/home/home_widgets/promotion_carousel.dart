@@ -1,4 +1,5 @@
 import 'package:book_aviyan_final/consts/colors.dart';
+import 'package:book_aviyan_final/pages/promotion_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 
@@ -29,21 +30,26 @@ class PromotionCarousel extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(left: 20),
               height: 150,
-              child: new Swiper(
+              child: Swiper(
                 itemBuilder: (BuildContext context, int index) {
-                  return new Image.network(
+                  return Image.network(
                     _images[index],
                     fit: BoxFit.fill,
                   );
                 },
 
-                // indicatorLayout: PageIndicatorLayout.COLOR,
                 autoplay: true,
                 fade: 0.1,
                 viewportFraction: 0.4,
                 scale: 0.5,
                 itemCount: _images.length,
                 pagination: SwiperPagination(),
+                onTap: (index) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PromotionDetail(
+                            index: index,
+                          )));
+                },
                 // control: SwiperControl(),
               ),
             ),
