@@ -1,5 +1,6 @@
 import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:book_aviyan_final/models/book_model.dart';
+import 'package:book_aviyan_final/pages/book_description_page.dart';
 import 'package:book_aviyan_final/provider/book_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,12 @@ class GridBooks extends StatelessWidget {
       itemCount: itemCount,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BookDetails()),
+            );
+          },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
