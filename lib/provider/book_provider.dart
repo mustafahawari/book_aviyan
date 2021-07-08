@@ -1,4 +1,5 @@
 import 'package:book_aviyan_final/models/book_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BookProvider with ChangeNotifier {
@@ -74,6 +75,28 @@ class BookProvider with ChangeNotifier {
         description:
             "Donec sollicitudin molestie malesuada. Vivamus suscipit tortor eget felis porttitor volutpat. Vivamus suscipit tortor eget felis porttitor volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Nulla porttitor accumsan tincidunt. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Proin eget tortor risus. Donec rutrum congue leo eget malesuada."),
   ];
+  Future<void> fetchProducts() async {
+    await FirebaseFirestore.instance
+        .collection("books")
+        .get()
+        .then((QuerySnapshot booksSnapshot) {
+      _books = [];
+      booksSnapshot.docs.forEach((element) {
+        _books.insert(
+          0,
+          BookModel(
+            id: element.get("bookId"),
+            title: element.get("bookName"),
+            description: element.get("description"),
+            category: element.get("category"),
+            coverImage: element.get("bookImage"),
+            phoneNumber: int.parse(element.get("phoneNumber")),
+            location: element.get("location"),
+          ),
+        );
+      });
+    });
+  }
 
   List<BookModel> get books => [..._books];
 

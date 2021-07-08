@@ -1,6 +1,5 @@
 import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:book_aviyan_final/models/book_model.dart';
-import 'package:book_aviyan_final/pages/book_description_page.dart';
 import 'package:book_aviyan_final/provider/book_provider.dart';
 import 'package:book_aviyan_final/services/user_state.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ class GridBooks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _bookProvider = Provider.of<BookProvider>(context);
+    _bookProvider.fetchProducts();
     List<BookModel> _bookList = _bookProvider.books;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
