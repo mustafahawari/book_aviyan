@@ -17,21 +17,15 @@ class CategoryPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.keyboard_arrow_left),
-                Text(
-                  "Category",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Category",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                CircleAvatar(
-                    backgroundImage: NetworkImage(userProvider.imageUrl ?? ""),
-                    backgroundColor: AppColor.mainColor),
-              ],
+              ),
             ),
             SizedBox(
               height: 10,
