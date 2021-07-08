@@ -9,15 +9,16 @@ class PromotionPage extends StatelessWidget {
   const PromotionPage({Key? key}) : super(key: key);
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Search App"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              })
-        ],
+      body: SafeArea(
+        child: Row(
+          children: [
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: DataSearch());
+                })
+          ],
+        ),
       ),
     );
   }
@@ -49,20 +50,9 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    throw UnimplementedError();
-
-    // final List<String> searchedItems = searchList
-    //     .where((element) => element.toLowerCase().contains(query.toLowerCase()))
-    //     .toList();
-
-    // return ListView.builder(
-    //     itemCount: searchedItems.length,
-    //     itemBuilder: (context, index) {
-    //       ListTile(
-    //         title: Text(searchedItems[index]),
-    //       );
-    //     });
-    // return
+    return Card(
+      child: Text(query),
+    );
   }
 
   @override
@@ -83,7 +73,7 @@ class DataSearch extends SearchDelegate<String> {
           return ListTile(
             title: Text(suggestionsItems[index].title!),
             onTap: () {
-              // showResults(context);
+              showResults(context);
               Navigator.push(
                   context,
                   MaterialPageRoute(

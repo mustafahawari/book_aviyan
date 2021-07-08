@@ -30,13 +30,13 @@ class _HomePageState extends State<HomePage> {
               return AlertDialog(
                 content: Text('Are you sure you want to exit?'),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('No'),
                     onPressed: () {
                       Navigator.of(context).pop(false);
                     },
                   ),
-                  FlatButton(
+                  TextButton(
                     child: Text('Yes, exit'),
                     onPressed: () {
                       Navigator.of(context).pop(true);

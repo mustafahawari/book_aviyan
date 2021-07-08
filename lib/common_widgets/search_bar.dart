@@ -1,22 +1,29 @@
-import 'dart:js';
+import 'package:book_aviyan_final/services/user_state.dart';
+import 'package:flutter/material.dart';
 
 import 'package:book_aviyan_final/models/book_model.dart';
 import 'package:book_aviyan_final/provider/book_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Search App"),
-        actions: [
+    return Container(
+      height: 40,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Search All Books"),
           IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              })
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: DataSearch());
+            },
+          ),
         ],
       ),
     );
@@ -24,6 +31,7 @@ class SearchBar extends StatelessWidget {
 }
 
 class DataSearch extends SearchDelegate<String> {
+  List<BookModel> suggestions = [];
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -48,18 +56,9 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    throw UnimplementedError();
-    // final List<String> searchedItems = searchList
-    //     .where((element) => element.toLowerCase().contains(query.toLowerCase()))
-    //     .toList();
-
-    // return ListView.builder(
-    //     itemCount: searchedItems.length,
-    //     itemBuilder: (context, index) {
-    //       ListTile(
-    //         title: Text(searchedItems[index]),
-    //       );
-    //     });
+    return Card(
+      child: Text(query),
+    );
   }
 
   @override
@@ -67,16 +66,25 @@ class DataSearch extends SearchDelegate<String> {
     final _bookProvider = Provider.of<BookProvider>(context);
 
     List<BookModel> _bookList = _bookProvider.books;
-    final List<BookModel> suggestionsItems = _bookList
-        .where((element) =>
-            element.title!.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    final List<BookModel> suggestionsItems = query.isEmpty
+        ? suggestions
+        : _bookList
+            .where((element) =>
+                element.title!.toLowerCase().contains(query.toLowerCase()))
+            .toList();
 
     return ListView.builder(
         itemCount: suggestionsItems.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(suggestionsItems[index].title!),
+            onTap: () {
+              showResults(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserState(index: index)));
+            },
           );
         });
   }
