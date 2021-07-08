@@ -23,7 +23,7 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
   bool _isLoading = false;
   var uuid = Uuid();
   final TextEditingController _categoryController = TextEditingController();
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  //
 
   String? _categoryValue;
 

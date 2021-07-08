@@ -9,7 +9,7 @@ class UserProfile extends StatefulWidget {
 class _ProfileState extends State<UserProfile> {
   late ScrollController _scrollController;
   var top = 0.0;
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -154,9 +154,9 @@ class _ProfileState extends State<UserProfile> {
                                           },
                                           child: Text('Cancel')),
                                       TextButton(
-                                        onPressed: () {
-                                          // await _auth.signOut().then((value) =>
-                                          //     Navigator.pop(context));
+                                        onPressed: () async {
+                                          await _auth.signOut().then((value) =>
+                                              Navigator.pop(context));
                                         },
                                         child: Text(
                                           'Ok',

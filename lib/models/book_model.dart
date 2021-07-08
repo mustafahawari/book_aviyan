@@ -1,4 +1,6 @@
-class BookModel {
+import 'package:flutter/material.dart';
+
+class BookModel with ChangeNotifier {
   String? id;
   String? title;
   String? description;

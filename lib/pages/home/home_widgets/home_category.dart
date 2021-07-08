@@ -1,16 +1,15 @@
 import 'package:book_aviyan_final/consts/colors.dart';
+import 'package:book_aviyan_final/pages/category/category_books.dart';
+import 'package:book_aviyan_final/provider/category_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeCategory extends StatelessWidget {
-  final List bookCategory = [
-    "Maths",
-    "Science",
-    "Computer",
-    "Social",
-    "Primary",
-  ];
   @override
   Widget build(BuildContext context) {
+    final _categoryProvider = Provider.of<CategoryProvider>(context);
+    List _booksByCategory = _categoryProvider.categories;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,8 +31,16 @@ class HomeCategory extends StatelessWidget {
             itemCount: 6,
             itemBuilder: (context, index) {
               return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoryBook(
+                          categoryName: _booksByCategory[index].name),
+                    ),
+                  );
+                },
                 splashColor: Colors.blue.shade100,
-                onTap: () {},
                 child: Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(vertical: 5),
@@ -43,7 +50,7 @@ class HomeCategory extends StatelessWidget {
                     color: AppColor.mainColor,
                   ),
                   clipBehavior: Clip.hardEdge,
-                  child: Text(bookCategory[index]),
+                  child: Text(_booksByCategory[index].name),
                 ),
               );
             },

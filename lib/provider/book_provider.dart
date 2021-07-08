@@ -76,4 +76,12 @@ class BookProvider with ChangeNotifier {
   ];
 
   List<BookModel> get books => [..._books];
+
+  List<BookModel> filterByCategory(String categoryName) {
+    List _categoryList = _books
+        .where((element) =>
+            element.category.toLowerCase().contains(categoryName.toLowerCase()))
+        .toList();
+    return [..._categoryList];
+  }
 }
