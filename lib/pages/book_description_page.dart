@@ -7,7 +7,6 @@ class BookDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _bookAttributes = Provider.of<BookModel>(context);
-
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(

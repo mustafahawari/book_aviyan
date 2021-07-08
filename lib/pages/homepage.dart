@@ -22,13 +22,40 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedPage],
-      bottomNavigationBar: BottomNavbar(
-        onChange: (index) {
-          _selectedPage = index;
-          setState(() {});
-        },
+    return WillPopScope(
+      onWillPop: () async {
+        final value = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text('Are you sure you want to exit?'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Yes, exit'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            });
+
+        return value == true;
+      },
+      child: Scaffold(
+        body: _pages[_selectedPage],
+        bottomNavigationBar: BottomNavbar(
+          onChange: (index) {
+            _selectedPage = index;
+            setState(() {});
+          },
+        ),
       ),
     );
   }

@@ -1,12 +1,12 @@
-import 'package:book_aviyan_final/services/user_state.dart';
-import 'package:flutter/material.dart';
+import 'dart:js';
 
 import 'package:book_aviyan_final/models/book_model.dart';
 import 'package:book_aviyan_final/provider/book_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PromotionPage extends StatelessWidget {
-  const PromotionPage({Key? key}) : super(key: key);
+class SearchBar extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +24,6 @@ class PromotionPage extends StatelessWidget {
 }
 
 class DataSearch extends SearchDelegate<String> {
-  List<BookModel> suggestions = [];
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -50,7 +49,6 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     throw UnimplementedError();
-
     // final List<String> searchedItems = searchList
     //     .where((element) => element.toLowerCase().contains(query.toLowerCase()))
     //     .toList();
@@ -62,7 +60,6 @@ class DataSearch extends SearchDelegate<String> {
     //         title: Text(searchedItems[index]),
     //       );
     //     });
-    // return
   }
 
   @override
@@ -70,25 +67,16 @@ class DataSearch extends SearchDelegate<String> {
     final _bookProvider = Provider.of<BookProvider>(context);
 
     List<BookModel> _bookList = _bookProvider.books;
-    final List<BookModel> suggestionsItems = query.isEmpty
-        ? suggestions
-        : _bookList
-            .where((element) =>
-                element.title!.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+    final List<BookModel> suggestionsItems = _bookList
+        .where((element) =>
+            element.title!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
     return ListView.builder(
         itemCount: suggestionsItems.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(suggestionsItems[index].title!),
-            onTap: () {
-              // showResults(context);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserState(index: index)));
-            },
           );
         });
   }

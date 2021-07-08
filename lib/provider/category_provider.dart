@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 class CategoryProvider with ChangeNotifier {
   BookModel books = BookModel();
   List _categories = [
-    CategoryModel(name: "Primary"),
-    CategoryModel(name: "Secondary"),
+    CategoryModel(name: "Primary level"),
+    CategoryModel(name: "Secondary level"),
     CategoryModel(name: "Bachelor"),
     CategoryModel(name: "Science"),
     CategoryModel(name: "SlC"),
