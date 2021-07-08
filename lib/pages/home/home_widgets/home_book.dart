@@ -35,9 +35,7 @@ class HomeBooks extends StatelessWidget {
         SizedBox(height: 10),
         Container(
           height: 300,
-          child: GridBooks(
-            itemCount: 6,
-          ),
+          child: GridBooks(itemCount: 6),
         )
       ],
     );
