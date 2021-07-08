@@ -11,6 +11,13 @@ class BookDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text(
+          _bookAttributes.title!,
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -51,8 +58,8 @@ class BookDetails extends StatelessWidget {
                   Text(
                     "Available",
                     style: TextStyle(
-                      fontSize: 10,
-                      // fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   ElevatedButton(
@@ -86,6 +93,35 @@ class BookDetails extends StatelessWidget {
                   fontSize: 15,
                 ),
               ),
+              SizedBox(height: 20),
+              Text(
+                "Location",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                _bookAttributes.location!,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Contact Details",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                _bookAttributes.phoneNumber!.toString(),
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),
