@@ -7,24 +7,29 @@ import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("Search All Books"),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: DataSearch());
-            },
-          ),
-        ],
+    return InkWell(
+      onTap: () {
+        showSearch(context: context, delegate: DataSearch());
+      },
+      child: Container(
+        height: 40,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Search All Books"),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: DataSearch());
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

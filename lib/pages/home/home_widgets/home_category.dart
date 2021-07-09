@@ -39,6 +39,7 @@ class HomeCategory extends StatelessWidget {
                           categoryName: _booksByCategory[index].name),
                     ),
                   );
+                  // print("${_booksByCategory[index].name}");
                 },
                 splashColor: Colors.blue.shade100,
                 child: Container(

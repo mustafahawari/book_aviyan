@@ -69,17 +69,24 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
             _isLoading = true;
           });
         }
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('bookImages')
-            .child(_bookName + ".jpg");
-        await ref.putFile(_pickedImage!);
-        var url = await ref.getDownloadURL();
+        // final ref = FirebaseStorage.instance
+        //     .ref()
+        //     .child('bookImages')
+        //     .child(_bookName + ".jpg");
+        // await ref.putFile(_pickedImage!);
+        // var url = await ref.getDownloadURL();
 
         final User _user = _auth.currentUser!;
         final _uid = _user.uid;
 
         final bookId = uuid.v4();
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('bookImages')
+            .child(bookId + ".jpg");
+        await ref.putFile(_pickedImage!);
+        var url = await ref.getDownloadURL();
 
         FirebaseFirestore.instance.collection("books").doc(bookId).set({
           "bookName": _bookName,

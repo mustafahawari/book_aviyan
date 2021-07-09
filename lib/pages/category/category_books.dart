@@ -12,7 +12,7 @@ class CategoryBook extends StatelessWidget {
   Widget build(BuildContext context) {
     final _bookProvider = Provider.of<BookProvider>(context);
     List _booksByCategory = _bookProvider.filterByCategory(categoryName);
-    // print(categoryName);
+    print(categoryName);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.mainColor,
