@@ -6,5 +6,6 @@ Book Aviyan is Mobile Application for exchanging books.
 
 # Requirements to debug the code
 
--> Flutter 2.0 or above
--> Java jdk 8
+### Flutter 2.2.3 or above
+### Java jdk 8
+### All the dependencies are filed up in pubspec.yaml
