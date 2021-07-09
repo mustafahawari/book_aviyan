@@ -1,4 +1,5 @@
 import 'package:book_aviyan_final/common_widgets/grid_book_widget.dart';
+import 'package:book_aviyan_final/pages/all_books_page.dart';
 import 'package:flutter/material.dart';
 
 class HomeBooks extends StatelessWidget {
@@ -20,7 +21,10 @@ class HomeBooks extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AllBooks()));
+              },
               child: Text(
                 "See all books →",
                 style: TextStyle(
