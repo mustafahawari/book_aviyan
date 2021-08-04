@@ -31,14 +31,16 @@ class _LandingPageState extends State<LandingPage> {
           final User _user = _auth.currentUser!;
           final _uid = _user.uid;
 
-          FirebaseFirestore.instance.collection("users").doc(_uid).set({
-            "id": _uid,
-            "name": _user.displayName,
-            "email": _user.email,
-            "phoneNumber": "",
-            "joinedAt": Timestamp.now(),
-            "imageUrl": _user.photoURL,
-          });
+          FirebaseFirestore.instance.collection("users").doc(_uid).set(
+            {
+              "id": _uid,
+              "name": _user.displayName,
+              "email": _user.email,
+              "phoneNumber": "",
+              "joinedAt": Timestamp.now(),
+              "imageUrl": _user.photoURL,
+            },
+          );
         } on FirebaseAuthException catch (e) {
           print(e.message);
           ErrorDialog.authErrorHandle(e.message!, context);

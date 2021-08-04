@@ -1,5 +1,4 @@
 import 'package:book_aviyan_final/common_widgets/search_bar.dart';
-import 'package:book_aviyan_final/consts/colors.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/home_book.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/home_category.dart';
 import 'package:book_aviyan_final/pages/home/home_widgets/promotion_carousel.dart';
@@ -13,8 +12,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    userProvider.userData();
+    // final userProvider = Provider.of<UserProvider>(context);
+    // userProvider.userData();
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -25,10 +24,13 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(Icons.dashboard),
-                  CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(userProvider.imageUrl ?? ""),
-                      backgroundColor: AppColor.mainColor),
+                  Consumer<UserProvider>(builder: (context, userProvider, _) {
+                    return CircleAvatar(
+                      child: userProvider.isAuthenticated
+                          ? Image.network(userProvider.imageUrl!)
+                          : Icon(Icons.account_box),
+                    );
+                  }),
                 ],
               ),
               Text(

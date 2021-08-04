@@ -8,17 +8,23 @@ class UserProvider with ChangeNotifier {
   String? phoneNumber;
   String? imageUrl;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isAuthenticated = false;
 
-  void userData() async {
-    User _user = _auth.currentUser!;
-    var _uid = _user.uid;
-    final DocumentSnapshot userDoc =
-        await FirebaseFirestore.instance.collection("users").doc(_uid).get();
+  Future<void> userData() async {
+    if (_auth.currentUser != null) {
+      isAuthenticated = true;
+      User _user = _auth.currentUser!;
+      var _uid = _user.uid;
+      final DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection("users").doc(_uid).get();
 
-    name = userDoc.get("name");
-    email = userDoc.get("email");
-    phoneNumber = userDoc.get("phoneNumber");
-    imageUrl = userDoc.get("imageUrl");
+      name = userDoc.get("name");
+      email = userDoc.get("email");
+      phoneNumber = userDoc.get("phoneNumber");
+      imageUrl = userDoc.get("imageUrl");
+    } else {
+      isAuthenticated = false;
+    }
     notifyListeners();
   }
 }

@@ -1,6 +1,8 @@
+import 'package:book_aviyan_final/provider/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -22,24 +24,27 @@ class _ProfileState extends State<UserProfile> {
     _scrollController.addListener(() {
       setState(() {});
     });
-    userData();
+    // userData();
   }
 
-  void userData() async {
-    User _user = _auth.currentUser!;
-    var _uid = _user.uid;
-    final DocumentSnapshot userDoc =
-        await FirebaseFirestore.instance.collection("users").doc(_uid).get();
-    setState(() {
-      _name = userDoc.get("name");
-      _email = userDoc.get("email");
-      _phoneNumber = userDoc.get("phoneNumber");
-      _imageUrl = userDoc.get("imageUrl");
-    });
-  }
+  // void userData() async {
+  //   User _user = _auth.currentUser!;
+  //   var _uid = _user.uid;
+  //   final DocumentSnapshot userDoc =
+  //       await FirebaseFirestore.instance.collection("users").doc(_uid).get();
+  //   setState(() {
+  //     _name = userDoc.get("name");
+  //     _email = userDoc.get("email");
+  //     _phoneNumber = userDoc.get("phoneNumber");
+  //     _imageUrl = userDoc.get("imageUrl");
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    userProvider.userData();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -63,55 +68,61 @@ class _ProfileState extends State<UserProfile> {
                           stops: [0.0, 1.0],
                           tileMode: TileMode.clamp),
                     ),
-                    child: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                      centerTitle: true,
-                      title: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          AnimatedOpacity(
-                            duration: Duration(milliseconds: 300),
-                            opacity: top <= 110.0 ? 1.0 : 0,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 12,
-                                ),
-                                Container(
-                                  height: kToolbarHeight / 1.8,
-                                  width: kToolbarHeight / 1.8,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white,
-                                        blurRadius: 1.0,
+                    child: Consumer<UserProvider>(
+                        builder: (context, userProvider, _) {
+                      return FlexibleSpaceBar(
+                        collapseMode: CollapseMode.parallax,
+                        centerTitle: true,
+                        title: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            AnimatedOpacity(
+                              duration: Duration(milliseconds: 300),
+                              opacity: top <= 110.0 ? 1.0 : 0,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 12,
+                                  ),
+                                  Container(
+                                    height: kToolbarHeight / 1.8,
+                                    width: kToolbarHeight / 1.8,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.white,
+                                          blurRadius: 1.0,
+                                        ),
+                                      ],
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: NetworkImage(userProvider
+                                                .isAuthenticated
+                                            ? userProvider.imageUrl!
+                                            : 'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
                                       ),
-                                    ],
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: NetworkImage(_imageUrl ??
-                                          'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 12),
-                                Text(
-                                  'Guest',
-                                  style: TextStyle(
-                                      fontSize: 20.0, color: Colors.white),
-                                ),
-                              ],
+                                  SizedBox(width: 12),
+                                  Text(
+                                    'Guest',
+                                    style: TextStyle(
+                                        fontSize: 20.0, color: Colors.white),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      background: Image(
-                        image: NetworkImage(_imageUrl ??
-                            'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+                          ],
+                        ),
+                        background: Image(
+                          image: NetworkImage(userProvider.isAuthenticated
+                              ? userProvider.imageUrl!
+                              : 'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    }),
                   );
                 }),
               ),
@@ -127,7 +138,11 @@ class _ProfileState extends State<UserProfile> {
                       thickness: 1,
                       color: Colors.grey,
                     ),
-                    userListTile('Email', _email ?? "", 0, context),
+                    userListTile(
+                        'Email',
+                        userProvider.isAuthenticated ? userProvider.email! : "",
+                        0,
+                        context),
                     userListTile(
                         'Phone number', _phoneNumber ?? "", 0, context),
                     Padding(
@@ -146,46 +161,48 @@ class _ProfileState extends State<UserProfile> {
                           onTap: () async {
                             // Navigator.canPop(context)? Navigator.pop(context):null;
                             showDialog(
-                                context: context,
-                                builder: (BuildContext ctx) {
-                                  return AlertDialog(
-                                    title: Row(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 6.0),
-                                          child: Image.network(
-                                            'https://image.flaticon.com/icons/png/128/1828/1828304.png',
-                                            height: 20,
-                                            width: 20,
-                                          ),
+                              context: context,
+                              builder: (BuildContext ctx) {
+                                return AlertDialog(
+                                  title: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 6.0),
+                                        child: Image.network(
+                                          'https://image.flaticon.com/icons/png/128/1828/1828304.png',
+                                          height: 20,
+                                          width: 20,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('Sign out'),
-                                        ),
-                                      ],
-                                    ),
-                                    content: Text('Do you wanna Sign out?'),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () async {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Cancel')),
-                                      TextButton(
-                                        onPressed: () async {
-                                          await _auth.signOut().then((value) =>
-                                              Navigator.pop(context));
-                                        },
-                                        child: Text(
-                                          'Ok',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      )
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Sign out'),
+                                      ),
                                     ],
-                                  );
-                                });
+                                  ),
+                                  content: Text('Do you wanna Sign out?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancel')),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await _auth.signOut().then(
+                                            (value) => Navigator.pop(context));
+                                        userProvider.userData();
+                                      },
+                                      child: Text(
+                                        'Ok',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
+                            );
                           },
                           title: Text('Logout'),
                           leading: Icon(Icons.exit_to_app_rounded),

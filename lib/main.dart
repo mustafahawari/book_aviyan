@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           create: (_) => CategoryProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => UserProvider(),
+          create: (context) => UserProvider(),
         )
       ],
       child: MaterialApp(
