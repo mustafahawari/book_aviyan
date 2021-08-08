@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class BookProvider with ChangeNotifier {
   List _books = [];
-  Future<void> fetchProducts() async {
+  Future<List<void>> fetchProducts() async {
     await FirebaseFirestore.instance
         .collection("books")
         .get()
@@ -25,6 +25,7 @@ class BookProvider with ChangeNotifier {
         );
       });
     });
+    return [_books];
   }
 
   List<BookModel> get books => [..._books];
