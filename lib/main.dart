@@ -1,7 +1,7 @@
-import 'package:book_aviyan_final/pages/homepage.dart';
-import 'package:book_aviyan_final/provider/book_provider.dart';
-import 'package:book_aviyan_final/provider/category_provider.dart';
-import 'package:book_aviyan_final/provider/user_provider.dart';
+import 'package:book_aviyan_final/gui/pages/homepage.dart';
+import 'package:book_aviyan_final/gui/provider/book_provider.dart';
+import 'package:book_aviyan_final/gui/provider/category_provider.dart';
+import 'package:book_aviyan_final/gui/provider/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'The Book Swap',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),

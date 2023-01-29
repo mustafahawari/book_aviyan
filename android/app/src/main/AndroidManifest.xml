@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.book_aviyan_final">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="book_aviyan_final"
+        android:label="The Book Swap"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
