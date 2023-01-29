@@ -1,4 +1,4 @@
-import 'package:book_aviyan_final/gui/provider/user_provider.dart';
+import 'package:book_aviyan_final/gui/feature/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

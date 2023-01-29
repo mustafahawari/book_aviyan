@@ -191,14 +191,6 @@ class _LoginPageState extends State<LoginPage> {
                                       fontSize: 17,
                                       color: Colors.black),
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.person,
-                                  size: 18,
-                                  color: Colors.black,
-                                )
                               ],
                             )),
                       ),
@@ -207,9 +199,16 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         children: [
                           Expanded(child: Divider(thickness: 2)),
-                          Text("Don't have account?"),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text("Don't have account?"),
+                          ),
                           Expanded(child: Divider(thickness: 2))
                         ],
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                       SizedBox(
                         width: 120,
@@ -228,25 +227,12 @@ class _LoginPageState extends State<LoginPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SignUp())),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Sign Up',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 17,
-                                    color: Colors.black),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.person,
-                                size: 18,
-                                color: Colors.black,
-                              )
-                            ],
+                          child: Text(
+                            'Sign Up',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                                color: Colors.black),
                           ),
                         ),
                       ),

@@ -1,4 +1,4 @@
-package com.example.book_aviyan_final
+package com.thebookswap.app
 
 import io.flutter.embedding.android.FlutterActivity
 

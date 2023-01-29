@@ -97,20 +97,6 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-          // Container(
-          //   height: double.infinity,
-          //   width: double.infinity,
-          //   decoration: BoxDecoration(
-          //     gradient: LinearGradient(
-          //       colors: [
-          //         Color(0xff90eaed),
-          //         Color(0xffb8d0d1),
-          //       ],
-          //       begin: Alignment.topCenter,
-          //       end: Alignment.bottomCenter,
-          //     ),
-          //   ),
-          // ),
           SingleChildScrollView(
             child: Column(
               children: [
@@ -256,38 +242,26 @@ class _SignUpState extends State<SignUp> {
                               ? Center(child: CircularProgressIndicator())
                               : ElevatedButton(
                                   style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Color(0xff90eaed)),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                          side: BorderSide(
-                                              color: AppColor.mainColor),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Color(0xff90eaed)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        side: BorderSide(
+                                          color: AppColor.mainColor,
                                         ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
                                   onPressed: _submitForm,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'SignUp',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Icon(
-                                        Icons.person_add,
-                                        size: 18,
-                                        color: Colors.black,
-                                      )
-                                    ],
+                                  child: Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 17,
+                                        color: Colors.black),
                                   ),
                                 ),
                         ),

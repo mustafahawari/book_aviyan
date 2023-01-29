@@ -2,7 +2,7 @@ import 'package:book_aviyan_final/core/services/user_state.dart';
 import 'package:flutter/material.dart';
 
 import 'package:book_aviyan_final/data/models/book_model.dart';
-import 'package:book_aviyan_final/gui/provider/book_provider.dart';
+import 'package:book_aviyan_final/gui/feature/book_provider.dart';
 import 'package:provider/provider.dart';
 
 class SearchBar extends StatelessWidget {

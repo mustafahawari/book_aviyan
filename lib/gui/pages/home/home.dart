@@ -2,7 +2,7 @@ import 'package:book_aviyan_final/gui/common_widgets/search_bar.dart';
 import 'package:book_aviyan_final/gui/pages/home/home_widgets/home_book.dart';
 import 'package:book_aviyan_final/gui/pages/home/home_widgets/home_category.dart';
 import 'package:book_aviyan_final/gui/pages/home/home_widgets/promotion_carousel.dart';
-import 'package:book_aviyan_final/gui/provider/user_provider.dart';
+import 'package:book_aviyan_final/gui/feature/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

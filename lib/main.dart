@@ -1,7 +1,7 @@
 import 'package:book_aviyan_final/gui/pages/homepage.dart';
-import 'package:book_aviyan_final/gui/provider/book_provider.dart';
-import 'package:book_aviyan_final/gui/provider/category_provider.dart';
-import 'package:book_aviyan_final/gui/provider/user_provider.dart';
+import 'package:book_aviyan_final/gui/feature/book_provider.dart';
+import 'package:book_aviyan_final/gui/feature/category_provider.dart';
+import 'package:book_aviyan_final/gui/feature/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

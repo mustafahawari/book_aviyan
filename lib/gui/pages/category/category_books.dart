@@ -1,6 +1,6 @@
 import 'package:book_aviyan_final/gui/common_widgets/grid_book_widget.dart';
 import 'package:book_aviyan_final/core/consts/colors.dart';
-import 'package:book_aviyan_final/gui/provider/book_provider.dart';
+import 'package:book_aviyan_final/gui/feature/book_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
