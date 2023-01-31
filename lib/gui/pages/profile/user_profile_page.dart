@@ -1,5 +1,6 @@
-import 'package:book_aviyan_final/gui/feature/user_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:book_aviyan_final/core/injection/di.dart';
+import 'package:book_aviyan_final/core/utils/loader_widget.dart';
+import 'package:book_aviyan_final/gui/feature/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,12 +12,7 @@ class UserProfile extends StatefulWidget {
 
 class _ProfileState extends State<UserProfile> {
   late ScrollController _scrollController;
-  String? _name;
-  String? _email;
-  String? _imageUrl;
-  String? _phoneNumber;
   var top = 0.0;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
@@ -24,27 +20,10 @@ class _ProfileState extends State<UserProfile> {
     _scrollController.addListener(() {
       setState(() {});
     });
-    // userData();
   }
-
-  // void userData() async {
-  //   User _user = _auth.currentUser!;
-  //   var _uid = _user.uid;
-  //   final DocumentSnapshot userDoc =
-  //       await FirebaseFirestore.instance.collection("users").doc(_uid).get();
-  //   setState(() {
-  //     _name = userDoc.get("name");
-  //     _email = userDoc.get("email");
-  //     _phoneNumber = userDoc.get("phoneNumber");
-  //     _imageUrl = userDoc.get("imageUrl");
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    userProvider.userData();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -68,61 +47,55 @@ class _ProfileState extends State<UserProfile> {
                           stops: [0.0, 1.0],
                           tileMode: TileMode.clamp),
                     ),
-                    child: Consumer<UserProvider>(
-                        builder: (context, userProvider, _) {
-                      return FlexibleSpaceBar(
-                        collapseMode: CollapseMode.parallax,
-                        centerTitle: true,
-                        title: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            AnimatedOpacity(
-                              duration: Duration(milliseconds: 300),
-                              opacity: top <= 110.0 ? 1.0 : 0,
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  Container(
-                                    height: kToolbarHeight / 1.8,
-                                    width: kToolbarHeight / 1.8,
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.white,
-                                          blurRadius: 1.0,
-                                        ),
-                                      ],
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(userProvider
-                                                .isAuthenticated
-                                            ? userProvider.imageUrl!
-                                            : 'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
+                    child: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.parallax,
+                      centerTitle: true,
+                      title: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 300),
+                            opacity: top <= 110.0 ? 1.0 : 0,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Container(
+                                  height: kToolbarHeight / 1.8,
+                                  width: kToolbarHeight / 1.8,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.white,
+                                        blurRadius: 1.0,
                                       ),
+                                    ],
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(
+                                          'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
                                     ),
                                   ),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    'Guest',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Guest',
+                                  style: TextStyle(
+                                      fontSize: 20.0, color: Colors.white),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        background: Image(
-                          image: NetworkImage(userProvider.isAuthenticated
-                              ? userProvider.imageUrl!
-                              : 'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
-                          fit: BoxFit.fill,
-                        ),
-                      );
-                    }),
+                          ),
+                        ],
+                      ),
+                      background: Image(
+                        image: NetworkImage(
+                            'https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg'),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
                   );
                 }),
               ),
@@ -138,13 +111,8 @@ class _ProfileState extends State<UserProfile> {
                       thickness: 1,
                       color: Colors.grey,
                     ),
-                    userListTile(
-                        'Email',
-                        userProvider.isAuthenticated ? userProvider.email! : "",
-                        0,
-                        context),
-                    userListTile(
-                        'Phone number', _phoneNumber ?? "", 0, context),
+                    userListTile('Email', "", 0, context),
+                    userListTile('Phone number', "", 0, context),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: userTitle('User settings'),
@@ -167,15 +135,6 @@ class _ProfileState extends State<UserProfile> {
                                   title: Row(
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 6.0),
-                                        child: Image.network(
-                                          'https://image.flaticon.com/icons/png/128/1828/1828304.png',
-                                          height: 20,
-                                          width: 20,
-                                        ),
-                                      ),
-                                      Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text('Sign out'),
                                       ),
@@ -190,9 +149,12 @@ class _ProfileState extends State<UserProfile> {
                                         child: Text('Cancel')),
                                     TextButton(
                                       onPressed: () async {
-                                        await _auth.signOut().then(
-                                            (value) => Navigator.pop(context));
-                                        userProvider.userData();
+                                        Navigator.pop(context);
+                                        await Provider.of<AuthProvider>(context, listen: false)
+                                            .logOut()
+                                            .then((value) {
+                                          Navigator.pop(context);
+                                        });
                                       },
                                       child: Text(
                                         'Ok',
@@ -204,7 +166,11 @@ class _ProfileState extends State<UserProfile> {
                               },
                             );
                           },
-                          title: Text('Logout'),
+                          title: Text(
+                            getIt<FirebaseAuth>().currentUser == null
+                                ? 'Login'
+                                : 'Logout',
+                          ),
                           leading: Icon(Icons.exit_to_app_rounded),
                         ),
                       ),
@@ -214,7 +180,10 @@ class _ProfileState extends State<UserProfile> {
               )
             ],
           ),
-          _buildFab()
+          _buildFab(),
+          Provider.of<AuthProvider>(context).status == AuthStatus.loading
+              ? CenterCircularLoader()
+              : SizedBox()
         ],
       ),
     );

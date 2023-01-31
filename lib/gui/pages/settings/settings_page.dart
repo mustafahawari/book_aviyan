@@ -1,10 +1,14 @@
+import 'package:book_aviyan_final/core/utils/ToastUtils.dart';
 import 'package:book_aviyan_final/gui/pages/profile/user_profile_page.dart';
 import 'package:book_aviyan_final/gui/pages/promotion/promotion_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+
+import '../../../core/injection/di.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -18,23 +22,35 @@ class SettingsPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text("Settings", ),
+        title: Text(
+          "Settings",
+        ),
       ),
-      
+
       body: Column(
         children: [
           ListTile(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile()));
+              if (getIt<FirebaseAuth>().currentUser == null) {
+                ToastUtils.showToast(
+                    "Please login to check Profile", ToastType.ERROR);
+              } else
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserProfile()));
             },
-            leading: Icon(CupertinoIcons.person,),
+            leading: Icon(
+              CupertinoIcons.person,
+            ),
             title: Text("Profile"),
           ),
           ListTile(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => PromotionPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PromotionPage()));
             },
-            leading: Icon(Icons.help,),
+            leading: Icon(
+              Icons.help,
+            ),
             title: Text("Promote your books"),
           ),
         ],

@@ -64,14 +64,9 @@ class HomeBooks extends StatelessWidget {
         SizedBox(height: 10),
         Container(
           // height: 300,
-          child: FutureBuilder(
-              future: _bookProvider.fetchProducts(),
-              builder: (context, snapshot) {
-                // if (!snapshot.hasData) {
-                //   Center(child: CircularProgressIndicator());
-                // }
-                return GridBooks(itemCount: 6);
-              }),
+          child: 
+                GridBooks(itemCount: 6)
+              
         )
       ],
     );

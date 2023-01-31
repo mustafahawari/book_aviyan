@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 class UserProvider with ChangeNotifier {
   String? name;
   String? email;
-  String? phoneNumber;
+  int? phoneNumber;
   String? imageUrl;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool isAuthenticated = false;
@@ -18,7 +18,7 @@ class UserProvider with ChangeNotifier {
       final DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection("users").doc(_uid).get();
 
-      name = userDoc.get("name");
+      name = userDoc.get("fullName");
       email = userDoc.get("email");
       phoneNumber = userDoc.get("phoneNumber");
       imageUrl = userDoc.get("imageUrl");

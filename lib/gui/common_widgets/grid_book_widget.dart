@@ -5,23 +5,19 @@ import 'package:book_aviyan_final/core/services/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../feature/auth_provider.dart';
+
 class GridBooks extends StatelessWidget {
   final int itemCount;
   GridBooks({Key? key, required this.itemCount}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _bookProvider = Provider.of<BookProvider>(context);
-    _bookProvider.fetchProducts();
-    List<BookModel> _bookList = _bookProvider.books;
+    // final _bookProvider = Provider.of<BookProvider>(context);
+    // _bookProvider.fetchProducts();
+    // List<BookModel> _bookList = _bookProvider.books;
 
-    return FutureBuilder(
-        future: _bookProvider.fetchProducts(),
-        builder: (context, snapshot) {
-          // if (!snapshot.hasData) {
-          //   return CircularProgressIndicator();
-          // }
-          return GridView.builder(
+    return GridView.builder(
             physics: BouncingScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
@@ -33,11 +29,17 @@ class GridBooks extends StatelessWidget {
             itemCount: itemCount,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  await checkAuthState().then((value) {
+                    Provider.of<AuthProvider>(context, listen: false)
+                        .userController
+                        .add(UserDetail(value));
+                  });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserState(
+                        // stream: stream,
                         index: index,
                       ),
                     ),
@@ -85,6 +87,6 @@ class GridBooks extends StatelessWidget {
               );
             },
           );
-        });
+        
   }
 }

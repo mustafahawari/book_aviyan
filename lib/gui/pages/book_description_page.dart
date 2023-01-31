@@ -6,13 +6,14 @@ import 'package:provider/provider.dart';
 class BookDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _bookAttributes = Provider.of<BookModel>(context);
+    // final _bookAttributes = Provider.of<BookModel>(context);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          _bookAttributes.title!,
+          // _bookAttributes.title!,
+          "title",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -34,8 +35,9 @@ class BookDetails extends StatelessWidget {
                       color: AppColor.mainColor),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Image.network(
-                      _bookAttributes.coverImage!,
+                    child: Image.asset(
+                      // _bookAttributes.coverImage!,
+                      "assets/images/cover.jpg",
                       fit: BoxFit.fill,
                       height: size.height * 0.6,
                       width: double.infinity,
@@ -45,7 +47,8 @@ class BookDetails extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                _bookAttributes.title!,
+                // _bookAttributes.title!,
+                "title",
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -88,7 +91,8 @@ class BookDetails extends StatelessWidget {
                 ),
               ),
               Text(
-                _bookAttributes.description!,
+                // _bookAttributes.description!,
+                "description",
                 style: TextStyle(
                   fontSize: 15,
                 ),
@@ -102,7 +106,8 @@ class BookDetails extends StatelessWidget {
                 ),
               ),
               Text(
-                _bookAttributes.location!,
+                // _bookAttributes.location!,
+                "location",
                 style: TextStyle(
                   fontSize: 15,
                 ),
@@ -116,7 +121,8 @@ class BookDetails extends StatelessWidget {
                 ),
               ),
               Text(
-                _bookAttributes.phoneNumber!.toString(),
+                // _bookAttributes.phoneNumber!.toString(),
+                "phone number",
                 style: TextStyle(
                   fontSize: 15,
                 ),
