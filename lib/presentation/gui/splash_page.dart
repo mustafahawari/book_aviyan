@@ -1,0 +1,66 @@
+import 'package:book_aviyan_final/presentation/feature/dashboard/dashboard_bloc.dart';
+import 'package:book_aviyan_final/presentation/gui/auth/login_page.dart';
+import 'package:book_aviyan_final/presentation/gui/dashboard.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
+import '../feature/auth_provider.dart';
+
+class SplashPage extends StatefulWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RootNavigation()
+        ),
+      );
+    });
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: Center(
+          child: Text("The Book Swap"),
+        ),
+      ),
+    );
+  }
+}
+
+class RootNavigation extends StatelessWidget {
+  const RootNavigation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: Provider.of<AuthProvider>(context).userController.stream,
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          final data = snapshot.data as UserDetail;
+          if(data.user != null) {
+            print("Here");
+            return Dashboard();
+          } else {
+            return LoginPage();
+          }
+        }
+        return LoginPage();
+      });
+  }
+}

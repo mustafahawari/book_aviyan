@@ -1,4 +1,4 @@
-import 'package:book_aviyan_final/data/data_sources/auth_remote_data_source.dart';
+import 'package:book_aviyan_final/data/data_sources/auth/auth_remote_data_source.dart';
 import 'package:book_aviyan_final/data/models/user_model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
