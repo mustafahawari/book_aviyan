@@ -27,7 +27,6 @@ class PromotionCarousel extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Container(
-              
               height: 170,
               child: Swiper(
                 itemBuilder: (BuildContext context, int index) {

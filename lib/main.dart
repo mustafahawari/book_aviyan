@@ -1,4 +1,3 @@
-
 import 'package:book_aviyan_final/core/injection/di.dart';
 import 'package:book_aviyan_final/presentation/feature/auth_provider.dart';
 import 'package:book_aviyan_final/presentation/feature/book/book_bloc.dart';
@@ -7,15 +6,28 @@ import 'package:book_aviyan_final/presentation/feature/book_provider.dart';
 import 'package:book_aviyan_final/presentation/feature/category_provider.dart';
 import 'package:book_aviyan_final/presentation/feature/user_provider.dart';
 import 'package:book_aviyan_final/presentation/gui/splash_page.dart';
+import 'package:book_aviyan_final/presentation/gui/web_screen/web_dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: 'AIzaSyB2SobVeW1yuTEPA1yNtM8gBlU_AJ-7NdM',
+        appId: '1:631111859859:web:9c75e88a542f200b235766',
+        messagingSenderId: '631111859859',
+        projectId: 'book-aviyan-6edb3',
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   configureDependencies();
   runApp(MyApp());
 }
@@ -52,19 +64,20 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'The Book Swap',
-          theme: ThemeData(
-            useMaterial3: true,
-            colorSchemeSeed: Colors.green,
-            // appBarTheme: AppBarTheme(
-            //   backgroundColor: Theme.of(context).colorScheme.primary
-            // ),
-            // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow,),
-            // primarySwatch: AppColor.tealMaterial,
-            // primaryColor: AppColor.mainColor,
-          ),
-          home: SplashPage()),
+        debugShowCheckedModeBanner: false,
+        title: 'The Book Swap',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.green,
+          // appBarTheme: AppBarTheme(
+          //   backgroundColor: Theme.of(context).colorScheme.primary
+          // ),
+          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow,),
+          // primarySwatch: AppColor.tealMaterial,
+          // primaryColor: AppColor.mainColor,
+        ),
+        home: SplashPage()
+      ),
     );
   }
 }

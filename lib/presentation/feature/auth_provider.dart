@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:book_aviyan_final/data/models/user_model/admin_model.dart';
 import 'package:book_aviyan_final/data/models/user_model/user_model.dart';
 import 'package:book_aviyan_final/domain/repository/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,8 +15,7 @@ class AuthProvider extends ChangeNotifier {
   String? errorMessage;
   AuthRepository authRepository;
   BehaviorSubject<UserDetail?> userController = BehaviorSubject<UserDetail?>();
-  AuthProvider(this.authRepository)
-  {
+  AuthProvider(this.authRepository) {
     getIt<FirebaseAuth>().userChanges().listen((event) async {
       print("called userChanges");
       final result = UserDetail(event);
@@ -52,6 +52,18 @@ class AuthProvider extends ChangeNotifier {
       errorMessage = e.toString();
       notifyListeners();
     }
+  }
+
+  Future<AdminUser?> adminLogin(String username, String password) async {
+    status = AuthStatus.loading;
+    notifyListeners();
+     print("UsernameP: $username");
+    print("PasswordP: $password");
+    final result = await authRepository.adminLogin(username, password);
+    status = AuthStatus.success;
+    notifyListeners();
+    return result;
+
   }
 
   Future<void> logOut() async {

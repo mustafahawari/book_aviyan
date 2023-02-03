@@ -1,5 +1,6 @@
 import 'package:book_aviyan_final/core/utils/loader_widget.dart';
 import 'package:book_aviyan_final/core/consts/colors.dart';
+import 'package:book_aviyan_final/core/utils/platform_helper.dart';
 import 'package:book_aviyan_final/presentation/gui/auth/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,9 @@ import 'package:wave/wave.dart';
 import '../../../core/utils/ToastUtils.dart';
 import '../../feature/auth_provider.dart';
 import '../dashboard.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import '../web_screen/web_dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,11 +24,25 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
   String _emailAddress = '';
   String _password = '';
+  TextEditingController _emailAddressController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<void> webAdminLogin() async {
+    final prov = Provider.of<AuthProvider>(context, listen: false);
+    final result = await prov.adminLogin(_emailAddressController.text.toLowerCase().trim(), _passwordController.text.trim());
+    if (result == null) {
+      ToastUtils.showToast(
+          "Username and password didn't match", ToastType.ERROR);
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => WebDashboard()));
+    }
   }
 
   void _submitForm() async {
@@ -116,13 +134,21 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextFormField(
+                            controller: _emailAddressController,
                             key: ValueKey('email'),
-                            validator: (value) {
-                              if (value!.isEmpty || !value.contains('@')) {
-                                return 'Please enter a valid email address';
-                              }
-                              return null;
-                            },
+                            validator: PlatformHelper.isWeb()
+                                ? (value) {
+                                  if(value!.isEmpty) {
+                                    return 'Please enter username';
+                                  }
+                                }
+                                : (value) {
+                                    if (value!.isEmpty ||
+                                        !value.contains('@')) {
+                                      return 'Please enter a valid email address';
+                                    }
+                                    return null;
+                                  },
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () => FocusScope.of(context)
                                 .requestFocus(_passwordFocusNode),
@@ -131,7 +157,9 @@ class _LoginPageState extends State<LoginPage> {
                                 border: const UnderlineInputBorder(),
                                 filled: true,
                                 prefixIcon: Icon(Icons.email),
-                                labelText: 'Email Address',
+                                labelText: PlatformHelper.isWeb()
+                                    ? 'username'
+                                    : 'Email Address',
                                 fillColor: Colors.white),
                             onSaved: (value) {
                               _emailAddress = value!;
@@ -141,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: TextFormField(
+                            controller: _passwordController,
                             key: ValueKey('Password'),
                             validator: (value) {
                               if (value!.isEmpty || value.length < 7) {
@@ -185,64 +214,80 @@ class _LoginPageState extends State<LoginPage> {
                                   side: BorderSide(color: AppColor.mainColor),
                                 ),
                               )),
-                              onPressed: _submitForm,
+                              onPressed: PlatformHelper.isWeb()
+                                  ? webAdminLogin
+                                  : _submitForm,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Login',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 17,
-                                        ),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17,
+                                    ),
                                   ),
                                 ],
                               )),
                         ),
                         SizedBox(width: 20),
                         SizedBox(height: 30),
-                        Row(
-                          children: [
-                            Expanded(child: Divider(thickness: 2)),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Don't have account?"),
-                            ),
-                            Expanded(child: Divider(thickness: 2))
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          width: 120,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).colorScheme.primary),
-                                foregroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).colorScheme.onPrimary),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    side: BorderSide(color: AppColor.mainColor),
+                        kIsWeb
+                            ? SizedBox()
+                            : Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(child: Divider(thickness: 2)),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Text("Don't have account?"),
+                                      ),
+                                      Expanded(child: Divider(thickness: 2))
+                                    ],
                                   ),
-                                )),
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignUp())),
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17,
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                          foregroundColor:
+                                              MaterialStateProperty.all(
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .onPrimary),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                              side: BorderSide(
+                                                  color: AppColor.mainColor),
+                                            ),
+                                          )),
+                                      onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SignUp())),
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   )

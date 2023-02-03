@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -26,6 +27,7 @@
   <title>book_aviyan_final</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -94,5 +96,20 @@
       loadMainDartJs();
     }
   </script>
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyB2SobVeW1yuTEPA1yNtM8gBlU_AJ-7NdM",
+      authDomain: "book-aviyan-6edb3.firebaseapp.com",
+      projectId: "book-aviyan-6edb3",
+      storageBucket: "book-aviyan-6edb3.appspot.com",
+      messagingSenderId: "631111859859",
+      appId: "1:631111859859:web:9c75e88a542f200b235766",
+      measurementId: "G-LZ6B1LKCQJ"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </body>
+
 </html>

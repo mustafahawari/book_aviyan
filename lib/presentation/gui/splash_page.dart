@@ -1,9 +1,8 @@
-import 'package:book_aviyan_final/presentation/feature/dashboard/dashboard_bloc.dart';
 import 'package:book_aviyan_final/presentation/gui/auth/login_page.dart';
 import 'package:book_aviyan_final/presentation/gui/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../feature/auth_provider.dart';
 
@@ -21,12 +20,9 @@ class _SplashPageState extends State<SplashPage> {
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => RootNavigation()
-        ),
+        MaterialPageRoute(builder: (context) => RootNavigation()),
       );
     });
-    
   }
 
   @override
@@ -48,19 +44,21 @@ class RootNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: Provider.of<AuthProvider>(context).userController.stream,
-      builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          final data = snapshot.data as UserDetail;
-          if(data.user != null) {
-            print("Here");
-            return Dashboard();
-          } else {
-            return LoginPage();
-          }
-        }
-        return LoginPage();
-      });
+    return kIsWeb
+        ? LoginPage()
+        : StreamBuilder(
+            stream: Provider.of<AuthProvider>(context).userController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final data = snapshot.data as UserDetail;
+                if (data.user != null) {
+                  print("Here");
+                  return Dashboard();
+                } else {
+                  return LoginPage();
+                }
+              }
+              return LoginPage();
+            });
   }
 }

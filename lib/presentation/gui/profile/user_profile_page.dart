@@ -1,6 +1,8 @@
 import 'package:book_aviyan_final/core/injection/di.dart';
+import 'package:book_aviyan_final/core/utils/ToastUtils.dart';
 import 'package:book_aviyan_final/core/utils/loader_widget.dart';
 import 'package:book_aviyan_final/presentation/feature/auth_provider.dart';
+import 'package:book_aviyan_final/presentation/gui/auth/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -134,10 +136,7 @@ class _ProfileState extends State<UserProfile> {
                                 return AlertDialog(
                                   title: Row(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text('Sign out'),
-                                      ),
+                                      Text('Sign out'),
                                     ],
                                   ),
                                   content: Text('Do you wanna Sign out?'),
@@ -150,10 +149,25 @@ class _ProfileState extends State<UserProfile> {
                                     TextButton(
                                       onPressed: () async {
                                         Navigator.pop(context);
-                                        await Provider.of<AuthProvider>(context, listen: false)
+                                        await Provider.of<AuthProvider>(context,
+                                                listen: false)
                                             .logOut()
                                             .then((value) {
-                                          Navigator.pop(context);
+                                          final prov =
+                                              Provider.of<AuthProvider>(context,
+                                                  listen: false);
+                                          if (prov.status ==
+                                              AuthStatus.success) {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LoginPage()),
+                                                (route) => false);
+                                          } else {
+                                            ToastUtils.showToast(
+                                                "Failed", ToastType.ERROR);
+                                          }
                                         });
                                       },
                                       child: Text(

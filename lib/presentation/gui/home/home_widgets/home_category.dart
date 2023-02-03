@@ -49,11 +49,14 @@ class HomeCategory extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 5),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.secondaryContainer
-                  ),
+                      borderRadius: BorderRadius.circular(10),
+                      color: Theme.of(context).colorScheme.secondaryContainer),
                   clipBehavior: Clip.hardEdge,
-                  child: Text(_booksByCategory[index].name, style:Theme.of(context).textTheme.titleSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),),
+                  child: Text(
+                    _booksByCategory[index].name,
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
               );
             },

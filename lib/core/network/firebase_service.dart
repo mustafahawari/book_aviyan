@@ -10,8 +10,8 @@ class FirebaseService {
     return await _firestore.collection(collection).doc(docId).set(data);
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getAll(String collection) async {
-   
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getAll(
+      String collection) async {
     final querySnapshot = await _firestore.collection(collection).get();
     return querySnapshot.docs;
   }

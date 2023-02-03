@@ -5,16 +5,20 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:book_aviyan_final/core/injection/di.dart' as _i11;
+import 'package:book_aviyan_final/core/injection/di.dart' as _i13;
 import 'package:book_aviyan_final/core/network/firebase_service.dart' as _i5;
 import 'package:book_aviyan_final/data/data_sources/auth/auth_remote_data_source.dart'
     as _i7;
 import 'package:book_aviyan_final/data/data_sources/books/books_remote_data_sources.dart'
     as _i9;
+import 'package:book_aviyan_final/data/data_sources/category/category_remote_data_source.dart'
+    as _i11;
 import 'package:book_aviyan_final/domain/repository/auth_repository.dart'
     as _i8;
 import 'package:book_aviyan_final/domain/repository/books_repository.dart'
     as _i10;
+import 'package:book_aviyan_final/domain/repository/category_repository.dart'
+    as _i12;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i4;
 import 'package:firebase_auth/firebase_auth.dart' as _i3;
 import 'package:firebase_storage/firebase_storage.dart' as _i6;
@@ -45,6 +49,7 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i7.AuthRemoteDataSourceImpl(
               gh<_i5.FirebaseService>(),
               gh<_i3.FirebaseAuth>(),
+              gh<_i4.FirebaseFirestore>(),
             ));
     gh.lazySingleton<_i8.AuthRepository>(
         () => _i8.AuthRepositoryImpl(gh<_i7.AuthRemoteDataSource>()));
@@ -55,8 +60,15 @@ extension GetItInjectableX on _i1.GetIt {
             ));
     gh.lazySingleton<_i10.BooksRepository>(
         () => _i10.BooksRepositoryImpl(gh<_i9.BooksRemoteDataSource>()));
+    gh.lazySingleton<_i11.CategoryRemoteDataSource>(
+        () => _i11.CategoryRemoteDataSourceImpl(
+              gh<_i5.FirebaseService>(),
+              gh<_i4.FirebaseFirestore>(),
+            ));
+    gh.lazySingleton<_i12.CategoryRepository>(
+        () => _i12.CategoryRepositoryImpl(gh<_i11.CategoryRemoteDataSource>()));
     return this;
   }
 }
 
-class _$RegisterModule extends _i11.RegisterModule {}
+class _$RegisterModule extends _i13.RegisterModule {}

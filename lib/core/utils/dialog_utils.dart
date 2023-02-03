@@ -8,7 +8,7 @@ class DialogUtils {
   factory DialogUtils() => _instance;
 
   static void showLoaderDialog(BuildContext context,
-      {bool dismissible = false }) {
+      {bool dismissible = true }) {
     AlertDialog alert = AlertDialog(
       content: Row(
         children: [
