@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:book_aviyan_final/core/consts/app_collections.dart';
 import 'package:book_aviyan_final/core/network/firebase_service.dart';
 import 'package:book_aviyan_final/core/utils/com_fun.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,13 +13,16 @@ abstract class BooksRemoteDataSource {
   Future<void> uploadBook(BookModel bookModel);
 
   Future<List<BookModel>> getAllBooks();
+
+  Future<List<BookModel>> getSellerBooks(String userId);
 }
 
 @LazySingleton(as: BooksRemoteDataSource)
 class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
   FirebaseService firebaseService;
   FirebaseStorage firebaseStorage;
-  BooksRemoteDataSourceImpl(this.firebaseService, this.firebaseStorage);
+  FirebaseFirestore firebaseFirestore;
+  BooksRemoteDataSourceImpl(this.firebaseService, this.firebaseStorage, this.firebaseFirestore);
   @override
   Future<void> uploadBook(BookModel bookModel) async {
     try {
@@ -58,5 +62,21 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
    } catch (e) {
      throw e;
    }
+  }
+  
+  @override
+  Future<List<BookModel>> getSellerBooks(String userId) async {
+    try {
+      final snapshot = await firebaseFirestore.collection(AppCollections.BOOKS_COLLECTION).where('userId', isEqualTo: userId).get();
+      if(snapshot.docs.isNotEmpty) {
+        final result = snapshot.docs;
+        List<BookModel> sellerBooks = result.map((e) => BookModel.fromMap(e.data())).toList();
+        return sellerBooks;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 }

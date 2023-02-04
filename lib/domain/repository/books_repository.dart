@@ -6,6 +6,8 @@ import '../../data/models/book_model.dart';
 abstract class BooksRepository {
   Future<void> uploadBooks(BookModel bookModel);
   Future<List<BookModel>> getAllBooks();
+
+  Future<List<BookModel>> getSellerBooks(String userId);
 }
 @LazySingleton(as: BooksRepository)
 class BooksRepositoryImpl implements BooksRepository {
@@ -28,5 +30,15 @@ class BooksRepositoryImpl implements BooksRepository {
     } catch (e) {
       throw e; 
     }
+  }
+  
+  @override
+  Future<List<BookModel>> getSellerBooks(String userId) async {
+   try {
+     final data =await booksRemoteDataSource.getSellerBooks(userId);
+     return data;
+   } catch (e) {
+     throw e;
+   }
   }
 }

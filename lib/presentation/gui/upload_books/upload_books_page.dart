@@ -3,16 +3,23 @@ import 'dart:developer';
 import 'package:book_aviyan_final/core/injection/di.dart';
 import 'package:book_aviyan_final/core/utils/ToastUtils.dart';
 import 'package:book_aviyan_final/core/utils/dialog_utils.dart';
+import 'package:book_aviyan_final/core/utils/loader_widget.dart';
 import 'package:book_aviyan_final/data/models/book_model.dart';
+import 'package:book_aviyan_final/data/models/category/main_category_model.dart';
+import 'package:book_aviyan_final/data/models/category/sub_category_model.dart';
 import 'package:book_aviyan_final/presentation/common_widgets/error_alert_dialog.dart';
 import 'package:book_aviyan_final/core/consts/colors.dart';
 import 'package:book_aviyan_final/presentation/feature/book/book_bloc.dart';
+import 'package:book_aviyan_final/presentation/feature/dashboard/dashboard_bloc.dart';
+import 'package:book_aviyan_final/presentation/gui/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
+
+import '../../feature/category/category_bloc.dart';
 
 class UploadBooksPage extends StatefulWidget {
   @override
@@ -34,9 +41,17 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
   bool _isLoading = false;
   var uuid = Uuid();
 
-  String? _categoryValue;
-  String? _subCategoryValue;
+  MainCategoryModel? _selectedCategory;
+  SubCategoryModel? _selectedSubCategory;
   File? _pickedImage;
+
+  List<MainCategoryModel> categories = [];
+  List<MainCategoryModel> subcategories = [];
+
+  void initState() {
+    super.initState();
+    categories = BlocProvider.of<CategoryBloc>(context).categories.value;
+  }
 
   showAlertDialog(BuildContext context, String title, String body) {
     // show the dialog
@@ -71,9 +86,9 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
 
       if (_pickedImage == null) {
         ErrorDialog.authErrorHandle("Please pick an image", context);
-      } else if (_categoryValue == null) {
+      } else if (_selectedCategory == null) {
         ErrorDialog.authErrorHandle("Please select category", context);
-      } else if (_subCategoryValue == null) {
+      } else if (_selectedSubCategory == null) {
         ErrorDialog.authErrorHandle("Please select sub category", context);
       } else {
         final bookToUpload = BookModel(
@@ -82,8 +97,8 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
           description: _bookDescription,
           author: _author,
           publisher: _publisher,
-          category: _categoryValue,
-          subCategory: _subCategoryValue,
+          category: _selectedCategory!.name,
+          subCategory: _selectedSubCategory!.name,
           location: _location,
           sellingPrice: _sellingPrice,
           printedPrice: _printedPrice,
@@ -176,438 +191,448 @@ class _UploadBooksPageState extends State<UploadBooksPage> {
           ),
         ),
       ),
-      body: BlocListener<BookBloc, BookState>(
-          listener: (context, state) {
-            log(state.status.toString());
-            if (state.status == BookStatus.initial) {
-              DialogUtils.showLoaderDialog(context);
-              print(_edition);
-              print(_publisher);
-            }
-            if (state.status == BookStatus.failure) {
-              ToastUtils.showToast(
-                state.errorMessage ?? "Upload Failed",
-                ToastType.ERROR,
-              );
-              Navigator.pop(context);
-            }
-            if (state.status == BookStatus.success) {
-              ToastUtils.showToast(
-                "Success",
-                ToastType.SUCCESS,
-              );
-              Navigator.pop(context);
-              _clear();
-              Navigator.pop(context);
-            }
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Center(
-                  child: Card(
-                    margin: EdgeInsets.all(15),
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Book Cover*",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(color: Colors.black54),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+      body: BlocConsumer<BookBloc, BookState>(listener: (context, state) {
+        log(state.status.toString());
+
+        if (state.status == BookStatus.failure) {
+          ToastUtils.showToast(
+            state.errorMessage ?? "Upload Failed",
+            ToastType.ERROR,
+          );
+        }
+        if (state.status == BookStatus.success) {
+          ToastUtils.showToast("Success", ToastType.SUCCESS);
+          _clear();
+          print("state.toString(): ${state.toString()}");
+          BlocProvider.of<DashboardBloc>(context).add(LoadDashboard());
+          Navigator.pop(context);
+        }
+      }, builder: (ctx, state) {
+        return Stack(
+          children: [
+            IgnorePointer(
+              ignoring: state.status == BookStatus.initial,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Center(
+                      child: Card(
+                        margin: EdgeInsets.all(15),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Expanded(
-                                  //  flex: 2,
-                                  child: this._pickedImage == null
-                                      ? Container(
-                                          margin: EdgeInsets.all(10),
-                                          height: 200,
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(width: 1),
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            color: AppColor.mainColor,
-                                          ),
-                                        )
-                                      : Container(
-                                          margin: EdgeInsets.all(10),
-                                          height: 200,
-                                          width: 200,
-                                          child: Container(
-                                            height: 200,
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .backgroundColor,
-                                            ),
-                                            child: Image.file(
-                                              this._pickedImage!,
-                                              fit: BoxFit.contain,
-                                              alignment: Alignment.center,
-                                            ),
-                                          ),
-                                        ),
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Book Cover*",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(color: Colors.black54),
+                                  ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Expanded(
+                                      //  flex: 2,
+                                      child: this._pickedImage == null
+                                          ? Container(
+                                              margin: EdgeInsets.all(10),
+                                              height: 200,
+                                              width: 200,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                color: AppColor.mainColor,
+                                              ),
+                                            )
+                                          : Container(
+                                              margin: EdgeInsets.all(10),
+                                              height: 200,
+                                              width: 200,
+                                              child: Container(
+                                                height: 200,
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .backgroundColor,
+                                                ),
+                                                child: Image.file(
+                                                  this._pickedImage!,
+                                                  fit: BoxFit.contain,
+                                                  alignment: Alignment.center,
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        FittedBox(
+                                          child: TextButton.icon(
+                                            // textColor: Colors.white,
+                                            onPressed: _pickImageCamera,
+                                            icon: Icon(Icons.camera,
+                                                color: Colors.purpleAccent),
+                                            label: Text(
+                                              'Camera',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        FittedBox(
+                                          child: TextButton.icon(
+                                            // textColor: Colors.white,
+                                            onPressed: _pickImageGallery,
+                                            icon: Icon(Icons.image,
+                                                color: Colors.purpleAccent),
+                                            label: Text(
+                                              'Gallery',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        FittedBox(
+                                          child: TextButton.icon(
+                                            // textColor: Colors.white,
+                                            onPressed: _removeImage,
+                                            icon: Icon(
+                                              Icons.remove_circle_rounded,
+                                              color: Colors.red,
+                                            ),
+                                            label: Text(
+                                              'Remove',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.redAccent,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                TextFormField(
+                                  key: ValueKey('Title'),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter a book title';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Book Title*',
+            
+                                    // label: RichText(
+                                    //   text: TextSpan(
+                                    //     children: [
+                                    //       TextSpan(
+                                    //         text: "Book Title",
+                                    //         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black54),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: "*",
+                                    //          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
+                                    //       )
+                                    //     ]
+                                    //   ),
+                                    // ),
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _bookName = value;
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  key: ValueKey('Author'),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter author name';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Author Name*',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _author = value;
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  key: ValueKey('Edition'),
+                                  keyboardType: TextInputType.emailAddress,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Edition',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _edition = value;
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  key: ValueKey('Publisher'),
+                                  keyboardType: TextInputType.emailAddress,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Publisher',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _publisher = value;
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    FittedBox(
-                                      child: TextButton.icon(
-                                        // textColor: Colors.white,
-                                        onPressed: _pickImageCamera,
-                                        icon: Icon(Icons.camera,
-                                            color: Colors.purpleAccent),
-                                        label: Text(
-                                          'Camera',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    FittedBox(
-                                      child: TextButton.icon(
-                                        // textColor: Colors.white,
-                                        onPressed: _pickImageGallery,
-                                        icon: Icon(Icons.image,
-                                            color: Colors.purpleAccent),
-                                        label: Text(
-                                          'Gallery',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    FittedBox(
-                                      child: TextButton.icon(
-                                        // textColor: Colors.white,
-                                        onPressed: _removeImage,
-                                        icon: Icon(
-                                          Icons.remove_circle_rounded,
-                                          color: Colors.red,
-                                        ),
-                                        label: Text(
-                                          'Remove',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.redAccent,
-                                          ),
+                                    // Expanded(
+                                    //   child: Padding(
+                                    //     padding: const EdgeInsets.only(right: 9),
+                                    //     child: Container(
+                                    //       child: TextFormField(
+                                    //         controller: _categoryController,
+                                    //         key: ValueKey('Category'),
+                                    //         validator: (value) {
+                                    //           if (value!.isEmpty) {
+                                    //             return 'Please enter a Category';
+                                    //           }
+                                    //           return null;
+                                    //         },
+                                    //         decoration: InputDecoration(
+                                    //           labelText: 'Add a new Category',
+                                    //           border: OutlineInputBorder(),
+                                    //         ),
+                                    //         onSaved: (value) {
+                                    //           _bookCategory = value!;
+                                    //         },
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.only(left: 10),
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: DropdownButton<MainCategoryModel>(
+                                          underline: SizedBox(),
+                                          isExpanded: true,
+                                          items: [
+                                            ...categories.map(
+                                              (e) => DropdownMenuItem<
+                                                  MainCategoryModel>(
+                                                child: Text(e.name!),
+                                                value: e,
+                                              ),
+                                            )
+                                          ],
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedCategory = value;
+                                              //_controller.text= _bookCategory;
+                                              print(_bookCategory);
+                                              BlocProvider.of<CategoryBloc>(
+                                                      context)
+                                                  .add(
+                                                GetAllSubCategoryByCategoryId(
+                                                    value!.id!),
+                                              );
+                                            });
+                                          },
+                                          hint: Text('Select Category*'),
+                                          value: _selectedCategory,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            TextFormField(
-                              key: ValueKey('Title'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter a book title';
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.emailAddress,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Book Title*',
-
-                                // label: RichText(
-                                //   text: TextSpan(
-                                //     children: [
-                                //       TextSpan(
-                                //         text: "Book Title",
-                                //         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black54),
-                                //       ),
-                                //       TextSpan(
-                                //         text: "*",
-                                //          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
-                                //       )
-                                //     ]
-                                //   ),
-                                // ),
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _bookName = value;
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              key: ValueKey('Author'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter author name';
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.emailAddress,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Author Name*',
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _author = value;
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              key: ValueKey('Edition'),
-                              keyboardType: TextInputType.emailAddress,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Edition',
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _edition = value;
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              key: ValueKey('Publisher'),
-                              keyboardType: TextInputType.emailAddress,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Publisher',
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _publisher = value;
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // Expanded(
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.only(right: 9),
-                                //     child: Container(
-                                //       child: TextFormField(
-                                //         controller: _categoryController,
-                                //         key: ValueKey('Category'),
-                                //         validator: (value) {
-                                //           if (value!.isEmpty) {
-                                //             return 'Please enter a Category';
-                                //           }
-                                //           return null;
-                                //         },
-                                //         decoration: InputDecoration(
-                                //           labelText: 'Add a new Category',
-                                //           border: OutlineInputBorder(),
-                                //         ),
-                                //         onSaved: (value) {
-                                //           _bookCategory = value!;
-                                //         },
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.only(left: 10),
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: DropdownButton<String>(
-                                      underline: SizedBox(),
-                                      isExpanded: true,
-                                      items: [
-                                        DropdownMenuItem<String>(
-                                          child: Text('Bachelor'),
-                                          value: 'Bachelor',
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          child: Text('Master'),
-                                          value: 'Master',
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          child: Text('Primary Level'),
-                                          value: 'Primary Level',
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          child: Text('Secondary Level'),
-                                          value: 'Secondary Level',
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          child: Text('Others'),
-                                          value: 'Others',
-                                        ),
-                                      ],
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _categoryValue = value;
-                                          //_controller.text= _bookCategory;
-                                          print(_bookCategory);
-                                        });
-                                      },
-                                      hint: Text('Select Category*'),
-                                      value: _categoryValue,
+                                SizedBox(height: 15),
+                                Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.only(left: 10),
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: StreamBuilder(
+                                      stream:
+                                          BlocProvider.of<CategoryBloc>(context)
+                                              .subcategories
+                                              .stream,
+                                      builder: (context, snapshot) {
+                                        return DropdownButton<SubCategoryModel>(
+                                          borderRadius: BorderRadius.circular(10),
+                                          underline: Container(),
+                                          // isDense: true,
+                                          isExpanded: true,
+                                          items: _selectedCategory == null
+                                              ? null
+                                              : [
+                                                  if (BlocProvider.of<
+                                                          CategoryBloc>(context)
+                                                      .subcategories
+                                                      .hasValue)
+                                                    ...BlocProvider.of<
+                                                            CategoryBloc>(context)
+                                                        .subcategories
+                                                        .value
+                                                        .map(
+                                                          (e) => DropdownMenuItem<
+                                                              SubCategoryModel>(
+                                                            child: Text(e.name!),
+                                                            value: e,
+                                                          ),
+                                                        )
+                                                ],
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedSubCategory = value;
+                                              //_controller.text= _bookCategory;
+                                              print(_bookCategory);
+                                            });
+                                          },
+                                          hint: Text('Select Sub Category*'),
+                                          value: _selectedSubCategory,
+                                        );
+                                      }),
+                                ),
+                                SizedBox(height: 15),
+                                TextFormField(
+                                    key: ValueKey('Description'),
+                                    // validator: (value) {
+                                    //   if (value!.isEmpty) {
+                                    //     return 'product description is required';
+                                    //   }
+                                    //   return null;
+                                    // },
+                                    maxLines: 6,
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
+                                    decoration: InputDecoration(
+                                      labelText: 'Description',
+                                      hintText: 'Product description',
+                                      border: OutlineInputBorder(),
                                     ),
+                                    onSaved: (value) {
+                                      _bookDescription = value;
+                                    },
+                                    onChanged: (text) {}),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  key: ValueKey('Printed Price'),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Enter printed price";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Printed Price*',
+                                    border: OutlineInputBorder(),
                                   ),
+                                  onSaved: (value) {
+                                    _printedPrice = double.parse(value!);
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  key: ValueKey('Selling Price'),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Enter selling price";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  decoration: InputDecoration(
+                                    labelText: 'Selling Price*',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _sellingPrice = double.parse(value!);
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  textCapitalization: TextCapitalization.words,
+                                  keyboardType: TextInputType.streetAddress,
+                                  key: ValueKey('Location'),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please Enter your Address';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Location',
+                                    hintText: "Enter your full address",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onSaved: (value) {
+                                    _location = value;
+                                  },
                                 ),
                               ],
                             ),
-                            SizedBox(height: 15),
-                            Container(
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.only(left: 10),
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: DropdownButton<String>(
-                                borderRadius: BorderRadius.circular(10),
-                                underline: Container(),
-                                // isDense: true,
-                                isExpanded: true,
-                                items: [
-                                  DropdownMenuItem<String>(
-                                    child: Text('1'),
-                                    value: '1',
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    child: Text('2'),
-                                    value: '2',
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    child: Text('3'),
-                                    value: '3',
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    child: Text('4'),
-                                    value: '4',
-                                  ),
-                                  DropdownMenuItem<String>(
-                                    child: Text('5'),
-                                    value: '5',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    _subCategoryValue = value;
-                                    //_controller.text= _bookCategory;
-                                    print(_bookCategory);
-                                  });
-                                },
-                                hint: Text('Select Sub Category*'),
-                                value: _subCategoryValue,
-                              ),
-                            ),
-                            SizedBox(height: 15),
-                            TextFormField(
-                                key: ValueKey('Description'),
-                                // validator: (value) {
-                                //   if (value!.isEmpty) {
-                                //     return 'product description is required';
-                                //   }
-                                //   return null;
-                                // },
-                                maxLines: 6,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                decoration: InputDecoration(
-                                  labelText: 'Description',
-                                  hintText: 'Product description',
-                                  border: OutlineInputBorder(),
-                                ),
-                                onSaved: (value) {
-                                  _bookDescription = value;
-                                },
-                                onChanged: (text) {}),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              key: ValueKey('Printed Price'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Enter printed price";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.number,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Printed Price*',
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _printedPrice = double.parse(value!);
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              key: ValueKey('Selling Price'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Enter selling price";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.number,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Selling Price*',
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _sellingPrice = double.parse(value!);
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            TextFormField(
-                              textCapitalization: TextCapitalization.words,
-                              keyboardType: TextInputType.streetAddress,
-                              key: ValueKey('Location'),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter your Address';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Location',
-                                hintText: "Enter your full address",
-                                border: OutlineInputBorder(),
-                              ),
-                              onSaved: (value) {
-                                _location = value;
-                              },
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 50,
+                    )
+                  ],
                 ),
-                SizedBox(
-                  height: 50,
-                )
-              ],
+              ),
             ),
-          )),
+            state.status == BookStatus.initial
+                ? CenterCircularLoader()
+                : SizedBox()
+          ],
+        );
+      }),
     );
   }
-  
+
   void _clear() {}
 }

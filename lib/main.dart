@@ -1,6 +1,7 @@
 import 'package:book_aviyan_final/core/injection/di.dart';
 import 'package:book_aviyan_final/presentation/feature/auth_provider.dart';
 import 'package:book_aviyan_final/presentation/feature/book/book_bloc.dart';
+import 'package:book_aviyan_final/presentation/feature/category/category_bloc.dart';
 import 'package:book_aviyan_final/presentation/feature/dashboard/dashboard_bloc.dart';
 import 'package:book_aviyan_final/presentation/feature/book_provider.dart';
 import 'package:book_aviyan_final/presentation/feature/category_provider.dart';
@@ -57,27 +58,32 @@ class MyApp extends StatelessWidget {
             getIt(),
           ),
         ),
+        BlocProvider<CategoryBloc>(
+          create: (context) => CategoryBloc(
+            getIt(),
+          ),
+        ),
         BlocProvider<DashboardBloc>(
           create: (context) => DashboardBloc(
+            getIt(),
             getIt(),
           ),
         )
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'The Book Swap',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.green,
-          // appBarTheme: AppBarTheme(
-          //   backgroundColor: Theme.of(context).colorScheme.primary
-          // ),
-          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow,),
-          // primarySwatch: AppColor.tealMaterial,
-          // primaryColor: AppColor.mainColor,
-        ),
-        home: SplashPage()
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'The Book Swap',
+          theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: Colors.green,
+            // appBarTheme: AppBarTheme(
+            //   backgroundColor: Theme.of(context).colorScheme.primary
+            // ),
+            // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow,),
+            // primarySwatch: AppColor.tealMaterial,
+            // primaryColor: AppColor.mainColor,
+          ),
+          home: SplashPage()),
     );
   }
 }

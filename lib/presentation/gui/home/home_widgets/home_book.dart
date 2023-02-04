@@ -49,7 +49,7 @@ class HomeBooks extends StatelessWidget {
         ),
         SizedBox(height: 10),
         GridView.builder(
-          physics: BouncingScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10,
@@ -73,6 +73,7 @@ class HomeBooks extends StatelessWidget {
                 shadowColor: Theme.of(context).colorScheme.secondaryContainer,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),

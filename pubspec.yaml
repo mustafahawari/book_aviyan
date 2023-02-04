@@ -13,7 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_swiper_null_safety: ^1.0.2
   provider: ^5.0.0
-  image_picker: ^0.8.6+1
+  image_picker: ^0.8.0+1
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.5
   wave: ^0.2.0

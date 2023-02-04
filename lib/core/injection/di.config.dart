@@ -57,6 +57,7 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i9.BooksRemoteDataSourceImpl(
               gh<_i5.FirebaseService>(),
               gh<_i6.FirebaseStorage>(),
+              gh<_i4.FirebaseFirestore>(),
             ));
     gh.lazySingleton<_i10.BooksRepository>(
         () => _i10.BooksRepositoryImpl(gh<_i9.BooksRemoteDataSource>()));

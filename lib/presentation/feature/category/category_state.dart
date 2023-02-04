@@ -19,14 +19,14 @@ class CategoryState extends Equatable {
   }) {
     return CategoryState(
       status: status ?? this.status,
-      categories: categories ?? categories,
-      subCategories: subCategories ?? subCategories,
-      errorMessage: errorMessage ?? errorMessage,
+      categories: categories ?? this.categories,
+      subCategories: subCategories ?? this.subCategories,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status];
+  List<Object?> get props => [status,categories,errorMessage,subCategories,];
 }
 
 enum CategoryStatus {

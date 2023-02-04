@@ -26,12 +26,15 @@ class BookState extends Equatable {
   }) {
     return BookState(
       status: status ?? this.status,
-      errorMessage: errorMessage ?? errorMessage,
-      allBooks: allBooks ?? allBooks,
-      sellerBooks: sellerBooks ?? sellerBooks
+      errorMessage: errorMessage ?? this.errorMessage,
+      allBooks: allBooks ?? this.allBooks,
+      sellerBooks: sellerBooks ?? this.sellerBooks
     );
   }
 
   @override
-  List<Object?> get props => [status];
+  bool? get stringify => true;
+
+  @override
+  List<Object?> get props => [status, errorMessage, allBooks, sellerBooks];
 }

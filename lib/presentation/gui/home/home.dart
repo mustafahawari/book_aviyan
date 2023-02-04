@@ -38,7 +38,11 @@ class Home extends StatelessWidget {
                     SizedBox(height: 20),
                     HomeCategory(),
                     SizedBox(height: 20),
-                    HomeBooks(forYouBooks: books)
+                    books.isEmpty
+                        ? Center(
+                            child: Text("No books to show"),
+                          )
+                        : HomeBooks(forYouBooks: books)
                   ],
                 ),
               ),
