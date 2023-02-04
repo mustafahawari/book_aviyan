@@ -58,19 +58,24 @@ class CategoryPage extends StatelessWidget {
                               child: Container(
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primaryContainer,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
                                     // borderRadius: BorderRadius.circular(15),
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
                                         offset: Offset(3, 6),
-                                        color: Theme.of(context).colorScheme.surfaceVariant,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceVariant,
                                         blurRadius: 7,
                                       )
                                     ]),
                                 child: Center(
                                   child: Text(
                                     data[index].name!,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

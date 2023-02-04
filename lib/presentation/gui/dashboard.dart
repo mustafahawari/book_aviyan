@@ -2,6 +2,7 @@ import 'package:book_aviyan_final/core/injection/di.dart';
 import 'package:book_aviyan_final/presentation/common_widgets/custom_bottom_navbar.dart';
 import 'package:book_aviyan_final/presentation/feature/book/book_bloc.dart';
 import 'package:book_aviyan_final/presentation/feature/category/category_bloc.dart';
+import 'package:book_aviyan_final/presentation/gui/blog_page.dart';
 import 'package:book_aviyan_final/presentation/gui/book_seller/book_seller_page.dart';
 import 'package:book_aviyan_final/presentation/gui/category/category_page.dart';
 import 'package:book_aviyan_final/presentation/gui/home/home.dart';
@@ -36,10 +37,17 @@ class _DashboardState extends State<Dashboard> {
     Home(),
     CategoryPage(),
     BookSellerPage(),
+    BlogPage(),
     SettingsPage(),
   ];
 
-  List<String> pageTitle = ["EXPLORE", "Categories", "", "Settings"];
+  List<String> pageTitle = [
+    "EXPLORE",
+    "Categories",
+    "",
+    "BlogPage",
+    "Settings"
+  ];
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -115,6 +123,8 @@ class _DashboardState extends State<Dashboard> {
                 label: "Category"),
             NavigationDestination(
                 icon: Icon(CupertinoIcons.book_circle), label: "Sell Book"),
+            NavigationDestination(
+                icon: Icon(CupertinoIcons.paperclip), label: "Blog"),
             NavigationDestination(
                 icon: Icon(CupertinoIcons.settings), label: "Settings")
           ],

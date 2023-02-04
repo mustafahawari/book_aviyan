@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
           title: 'The Book Swap',
           theme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: Colors.green,
+            colorSchemeSeed: Colors.deepOrangeAccent,
             // appBarTheme: AppBarTheme(
             //   backgroundColor: Theme.of(context).colorScheme.primary
             // ),
