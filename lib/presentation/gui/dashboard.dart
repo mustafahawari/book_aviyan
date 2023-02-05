@@ -6,6 +6,7 @@ import 'package:book_aviyan_final/presentation/gui/blog_page.dart';
 import 'package:book_aviyan_final/presentation/gui/book_seller/book_seller_page.dart';
 import 'package:book_aviyan_final/presentation/gui/category/category_page.dart';
 import 'package:book_aviyan_final/presentation/gui/home/home.dart';
+import 'package:book_aviyan_final/presentation/gui/liked_list.dart';
 import 'package:book_aviyan_final/presentation/gui/settings/settings_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,6 +39,7 @@ class _DashboardState extends State<Dashboard> {
     CategoryPage(),
     BookSellerPage(),
     BlogPage(),
+    LikedList(),
     SettingsPage(),
   ];
 
@@ -46,6 +48,7 @@ class _DashboardState extends State<Dashboard> {
     "Categories",
     "",
     "BlogPage",
+    "LikedList",
     "Settings"
   ];
   @override
@@ -117,14 +120,14 @@ class _DashboardState extends State<Dashboard> {
             NavigationDestination(
                 icon: Icon(CupertinoIcons.home), label: "Home"),
             NavigationDestination(
-                icon: Icon(
-                  CupertinoIcons.tv_music_note_fill,
-                ),
+                icon: Icon(CupertinoIcons.tv_music_note_fill),
                 label: "Category"),
             NavigationDestination(
                 icon: Icon(CupertinoIcons.book_circle), label: "Sell Book"),
             NavigationDestination(
                 icon: Icon(CupertinoIcons.paperclip), label: "Blog"),
+            NavigationDestination(
+                icon: Icon(CupertinoIcons.suit_heart), label: "LikedList"),
             NavigationDestination(
                 icon: Icon(CupertinoIcons.settings), label: "Settings")
           ],

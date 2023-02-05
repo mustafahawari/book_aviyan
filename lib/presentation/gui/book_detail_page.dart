@@ -36,6 +36,32 @@ class BookDetailPage extends StatelessWidget {
           ),
         ],
       ),
+      bottomSheet: Container(
+        margin: const EdgeInsets.all(3),
+        height: kBottomNavigationBarHeight * 0.8,
+        width: double.infinity,
+        child: Material(
+          color: Theme.of(context).colorScheme.primary,
+          // color: AppColor.mainColor,
+          child: InkWell(
+            onTap: () {},
+            splashColor: Colors.grey,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Text(
+                  'Buy Now',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
