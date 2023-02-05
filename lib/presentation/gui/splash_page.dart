@@ -31,8 +31,19 @@ class _SplashPageState extends State<SplashPage> {
       child: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: Center(
-          child: Text("The Book Swap"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          verticalDirection: VerticalDirection.down,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              height: 100,
+              width: 100,
+            ),
+            Text("The Book Swap")
+          ],
         ),
       ),
     );

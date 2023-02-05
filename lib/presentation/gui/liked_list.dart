@@ -81,7 +81,7 @@ class _LikedListState extends State<LikedList> {
                           ),
                           Text(
                             'Book 2 Title\nAuthor',
-                            // style: Theme.of(context).colorScheme.primaryContainer,
+                            // style: TextStyle(Theme.of(context).colorScheme.primaryContainer),
                           ),
                         ],
                       ),
